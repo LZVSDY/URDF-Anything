@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> URDF-Anything: Constructing Articulated Objects with 3D Multimodal Language Model </title>
+    
+    <!-- 引入Tailwind CSS，一个流行的CSS框架，用于快速构建漂亮的界面 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入Roboto字体，这是一种现代、清晰的字体，非常适合学术网站 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 动态网络状背景花纹 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                /* 网络节点 */
+                radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.25) 2px, transparent 3px),
+                radial-gradient(circle at 85% 35%, rgba(139, 92, 246, 0.22) 1.5px, transparent 2.5px),
+                radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.18) 2px, transparent 3px),
+                radial-gradient(circle at 75% 15%, rgba(59, 130, 246, 0.16) 1px, transparent 2px),
+                radial-gradient(circle at 65% 85%, rgba(139, 92, 246, 0.15) 1.5px, transparent 2.5px),
+                /* 连接线 */
+                linear-gradient(45deg, transparent 49%, rgba(59, 130, 246, 0.08) 50%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, rgba(139, 92, 246, 0.06) 50%, transparent 51%),
+                linear-gradient(30deg, transparent 49.5%, rgba(34, 197, 94, 0.05) 50%, transparent 50.5%);
+            background-size: 
+                400px 400px, 350px 350px, 450px 450px, 300px 300px, 380px 380px,
+                200px 200px, 250px 250px, 180px 180px;
+            animation: networkRotate 240s linear infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                /* 第二层网络 */
+                radial-gradient(circle at 35% 45%, rgba(59, 130, 246, 0.12) 1px, transparent 2px),
+                radial-gradient(circle at 70% 60%, rgba(139, 92, 246, 0.10) 1.5px, transparent 2.5px),
+                radial-gradient(circle at 45% 20%, rgba(34, 197, 94, 0.08) 1px, transparent 2px),
+                /* 反向连接线 */
+                linear-gradient(60deg, transparent 49.5%, rgba(59, 130, 246, 0.04) 50%, transparent 50.5%),
+                linear-gradient(-30deg, transparent 49.5%, rgba(139, 92, 246, 0.04) 50%, transparent 50.5%);
+            background-size: 
+                320px 320px, 280px 280px, 360px 360px,
+                150px 150px, 170px 170px;
+            animation: networkRotate 300s linear infinite reverse;
+        }
+        
+        @keyframes networkRotate {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.05);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* 自定义样式，将Roboto字体应用到整个页面 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9fafb; /* 使用一个非常浅的灰色作为背景 */
+            position: relative;
+        }
+        /* 为标题添加一点额外的样式 */
+        h1, h2 {
+            font-weight: 700;
+        }
+        /* 代码块样式 */
+        pre {
+            background-color: #1f2937; /* 深灰色背景 */
+            color: #d1d5db; /* 浅灰色文字 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto; /* 水平滚动 */
+            font-size: 0.875rem;
+        }
+        /* 摘要部分使用新罗马字体 */
+        .abstract-text {
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- 页面主容器 -->
+    <div class="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+
+        <!-- 论文标题 -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+                URDF-Anything: Constructing Articulated Objects with 3D Multimodal Language Model
+            </h1>
+        </header>
+
+        <!-- 作者信息 -->
+        <div class="text-center mb-8">
+            <p class="text-lg">
+                <!-- 替换成您的作者列表 -->
+                <span class="font-semibold">Zhe Li * </span><sup>1</sup>,
+                <span class="font-semibold">Xiang Bai * </span><sup>1</sup>,
+                <span class="font-semibold">Jieyu Zhang </span><sup>2</sup>,
+                <span class="font-semibold">Zhuangzhe Wu</span><sup>1</sup>,
+                <span class="font-semibold">Che Xu</span><sup>1</sup>,
+                <span class="font-semibold">Ying Li</span><sup>1</sup>,
+                <span class="font-semibold">Chengkai Hou</span><sup>1</sup>,
+                <span class="font-semibold">Shanghang Zhang</span><sup>1</sup><span class="text-blue-600">✉</span>
+            </p>
+            <p class="text-md text-gray-500 mt-2">
+                <!-- 替换成您的单位信息 -->
+                <sup>1</sup> State Key Laboratory of Multimedia Information Processing, School of Computer Science, Peking University, <sup>2</sup> University of Washington
+            </p>
+        </div>
+
+        <!-- 快速链接 -->
+        <div class="flex justify-center items-center space-x-4 mb-10">
+            <a href="#" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
+                Paper (PDF)
+            </a>
+            <a href="https://github.com/LZVSDY/URDF-Anything" target="_blank" rel="noopener noreferrer" class="bg-gray-800 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-gray-900 transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm2 0v8h12V6H4zm2 2a1 1 0 00-1 1v2a1 1 0 001 1h8a1 1 0 001-1V9a1 1 0 00-1-1H6z" /></svg>
+                Code
+            </a>
+        </div>
+
+        <!-- 概念图/视频预览 -->
+        <section class="mb-12">
+            <div class="bg-white p-2 rounded-lg shadow-lg border border-gray-200">
+                <!-- 使用figure目录下的PNG图片 -->
+                <img src="./figure/URDF-Anything_teaser.png" alt="URDF-Anything 论文概念图" class="w-full rounded-md">
+                
+                <!-- 如果要用视频，可以注释掉上面的img标签，使用下面的iframe -->
+                <!-- 
+                <div class="aspect-w-16 aspect-h-9">
+                    <iframe src="https://www.youtube.com/embed/【您的视频ID】" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-md"></iframe>
+                </div>
+                -->
+            </div>
+            <p class="text-center text-gray-500 mt-2 text-sm"> URDF-Anything: Generating Functional URDF Digital Twins from Visual Observations(single or multi-view images). Our framework, utilizing a 3D Multimodal Large Language Model and guided by instructions (e.g., "Segment parts and predict parameters"), processes the point cloud to jointly infer geometric part segmentation and kinematic structure. The output is a segmented 3D model with defined joints (represented here by different part colors), forming a functional URDF digital twin directly usable in physics simulators.</p>
+        </section>
+
+        <!-- 摘要 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Abstract</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <p class="text-base leading-relaxed abstract-text">
+                    Constructing accurate digital twins of articulated objects is essential for robotic simulation training and embodied AI world model building, 
+                    yet historically requires painstaking manual modeling or multi-stage pipelines. 
+                    In this work, we propose <strong>URDF-Anything</strong>, an end-to-end automatic reconstruction framework based on a 3D multimodal large language model (MLLM). 
+                    URDF-Anything utilizes an autoregressive prediction framework based on point-cloud and text multimodal input to jointly optimize geometric segmentation and kinematic parameter prediction. 
+                    It implements a specialized <i>[SEG]</i> token mechanism that interacts directly with point cloud features, 
+                    enabling fine-grained part-level segmentation while maintaining consistency with the kinematic parameter predictions.
+                    Experiments on both simulated and real-world datasets demonstrate that our method significantly outperforms existing approaches regarding geometric segmentation (mIoU 17% improvement), 
+                    kinematic parameter prediction (average error reduction of 29%), and physical executability (surpassing baselines by 50%). 
+                    Notably, our method exhibits excellent generalization ability, performing well even on objects outside the training set. 
+                    This work provides an efficient solution for constructing digital twins for robotic simulation, significantly enhancing the sim-to-real transfer capability.
+                </p>
+            </div>
+        </section>
+
+        <!-- 框架图 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Framework</h2>
+            <div class="grid grid-cols-1 gap-8">
+                <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                    <img src="./figure/Method_Architecture.png" alt="Prediction-then-Editing Paradigm" class="w-full rounded-md mb-3">
+                    <h3 class="font-semibold text-lg mb-1"> Prediction-then-Editing Paradigm</h3>
+                    <p class="text-base leading-relaxed abstract-text">Overview of the URDF-Anything Framework. The pipeline takes a 3D point cloud (from image) and a structured language instruction as input. 
+                        The 3D MLLM(fine-tuned with LoRA) autoregressively generates symbolic output (kinematic parameters) and <i>[SEG]</i> tokens. 
+                        The embeddings corresponding to the generated <i>[SEG]</i> tokens then interact with the point cloud features via a 3D Decoder to perform fine-grained geometric segmentation of the point cloud into individual links. 
+                        Finally, the jointly predicted kinematic parameters and the segmented geometry are integrated into a functional URDF file, 
+                        resulting in a complete articulated 3D model ready for physics simulation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 实验部分 -->
+         <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Experiments</h2>
+            <div class="grid grid-cols-1 gap-8">
+                <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                    <img src="./figure/WIP.png" alt="WIP" class="w-full rounded-md mb-3">
+                    <h3 class="font-semibold text-lg mb-1"> WIP </h3>
+                    <p class="text-base leading-relaxed abstract-text"> WIP </p>
+                </div>
+            </div>
+        </section>
+         
+
+        <!-- Demo Video -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Demo</h2>
+            <div class="bg-white p-2 rounded-lg shadow-lg border border-gray-200">
+                <!-- YouTube Video Embed -->
+                <div class="aspect-w-16 aspect-h-9 relative" style="padding-bottom: 56.25%; height: 0;">
+                    <iframe 
+                        src="https://www.youtube.com/" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen 
+                        class="absolute top-0 left-0 w-full h-full rounded-md">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citation/BibTeX -->
+        <section>
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Citation</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <p class="mb-4">If you use our work in your research, please cite:</p>
+                <pre><code>@article{
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>2025 NIPS</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
