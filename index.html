@@ -198,10 +198,127 @@
             <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Experiments</h2>
             <div class="grid grid-cols-1 gap-8">
                 <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
-                    <img src="./figure/WIP.png" alt="WIP" class="w-full rounded-md mb-3">
-                    <h3 class="font-semibold text-lg mb-1"> WIP </h3>
-                    <p class="text-base leading-relaxed abstract-text"> WIP </p>
+                    <img src="./figure/table3.png" alt="WIP" class="w-full rounded-md mb-3">
+                    <h3 class="font-semibold text-lg mb-1"> Physical Executability Rate (% ↑) across methods on ID and OOD subsets. </h3>
+                    <p class="text-base leading-relaxed abstract-text"> 
+                        URDF-Anything achieves a high physical executability rate, 
+                        significantly surpassing baseline methods, particularly for OOD objects. 
+                        This demonstrates the superior overall pipeline robustness of our approach. 
+                        Compared to prior methods like Real2Code, which rely on complex, 
+                        sequential pipelines where errors in one step can cascade and require manual intervention for refinement, 
+                        or Articulate-Anything, which may depend on iterative refinement for parameter estimation, 
+                        our framework utilizes a unified, end-to-end MLLM that jointly reasons about geometry and kinematics. 
+                        This direct, integrated approach minimizes error propagation, 
+                        allowing the model to leverage rich multimodal context for robust prediction of a consistent geometric and kinematic structure in a single pass.
+                    </p>
                 </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-8 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                    <img src="./figure/table4.png" alt="WIP" class="w-full rounded-md mb-3">
+                    <h3 class="font-semibold text-lg mb-1"> Ablation Study on Input Modality for Joint Parameter Prediction. </h3>
+                    <p class="text-base leading-relaxed abstract-text"> 
+                        This ablation study demonstrates that achieving high-fidelity 3D kinematic inference requires the combination of detailed 3D geometry and language guidance. 
+                        Experiments show that 2D images are insufficient for this task, and simplified 3D representations like Oriented Bounding Boxes (OBB) lose too much crucial detail. 
+                        While a detailed point cloud alone improves performance, the best results are achieved by integrating it with language instructions within a 3D Multimodal Large Language Model (MLLM), 
+                        validating this combined approach as the optimal design.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-8 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                    <img src="./figure/baseline_viz.png" alt="WIP" class="w-full rounded-md mb-3">
+                    <h3 class="font-semibold text-lg mb-1"> Qualitative Comparison of Articulated Object Reconstruction Results. </h3>
+                    <p class="text-base leading-relaxed abstract-text"> 
+                       The top row displays the input image for various articulated object instances (each column represents a different object). 
+                       We can find that baseline methods frequently struggle in predicting incorrect object types,
+                       generating distorted geometry, or exhibiting significant errors in link placement, 
+                       leading to misaligned or incorrect structures.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 效果展示 -->
+         <!-- 多行：每行一对图像 + 视频（响应式，图片/视频等高） -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-blue-500 pb-2 mb-4">Results</h2>
+            <div class="space-y-8">
+
+                <!-- Row 1: 100744 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <img src="./figure/100744.png" alt="100744 image" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <video class="w-full h-full object-cover" controls preload="metadata" muted>
+                                <source src="./figure/100744_h264.mp4" type="video/mp4">
+                                <source src="./figure/100744.webm" type="video/webm">
+                                <p class="sr-only">你的浏览器不支持视频播放。你可以 <a href="./figure/100744_h264.mp4" target="_blank">下载视频</a>。</p>
+                            </video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: 31249 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <img src="./figure/31249.png" alt="31249 image" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <video class="w-full h-full object-cover" controls preload="metadata" muted>
+                                <source src="./figure/31249_h264.mp4" type="video/mp4">
+                                <source src="./figure/31249.webm" type="video/webm">
+                                <p class="sr-only">你的浏览器不支持视频播放。你可以 <a href="./figure/31249.mp4" target="_blank">下载视频</a>。</p>
+                            </video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: 19179 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <img src="./figure/19179.png" alt="19179 image" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <video class="w-full h-full object-cover" controls preload="metadata" muted>
+                                <source src="./figure/19179_h264.mp4" type="video/mp4">
+                                <source src="./figure/19179.webm" type="video/webm">
+                                <p class="sr-only">你的浏览器不支持视频播放。你可以 <a href="./figure/19179.mp4" target="_blank">下载视频</a>。</p>
+                            </video>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 4: 9912 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <img src="./figure/9912.png" alt="9912 image" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+                        <div class="h-64 md:h-96 overflow-hidden rounded-md mb-3">
+                            <video class="w-full h-full object-cover" controls preload="metadata" muted>
+                                <source src="./figure/9912_h264.mp4" type="video/mp4">
+                                <source src="./figure/9912.webm" type="video/webm">
+                                <p class="sr-only">你的浏览器不支持视频播放。你可以 <a href="./figure/9912.mp4" target="_blank">下载视频</a>。</p>
+                            </video>
+                        </div>
+                    </div>
+
             </div>
         </section>
          
